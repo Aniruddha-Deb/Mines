@@ -2,22 +2,31 @@ package com.sensei.mines;
 
 import com.sensei.mines.core.MinefieldGenerator;
 import com.sensei.mines.ui.Minefield;
+import com.sensei.mines.ui.newgame.NewGame;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Mines extends Application{
-
+public class Mines extends Application {
+	
+	private Stage stage = null;
+	
+	public void startGame( int numRows, int numCols, int numMines ) {
+		int[][] mines = MinefieldGenerator.generate( numCols, numRows, numMines );
+		Scene s = new Scene( new Minefield( mines, numMines ), numCols*40, numRows*35 );
+		stage.setScene( s );
+		stage.setTitle( "Mines by Deb" );
+		stage.show();
+	}
+	
 	@Override
 	public void start( Stage primaryStage ) throws Exception{
 		
-		int[][] mines = MinefieldGenerator.generate( 10, 10, 10 );
+		this.stage = primaryStage;
 		
-		Scene s = new Scene( new Minefield( mines, 10 ), 400, 400 );
-		primaryStage.setTitle( "Mines by Deb" );
-		primaryStage.setScene( s );
-		primaryStage.show();
+		NewGame ng = new NewGame( this );
+		ng.show();
 	}
 	
 	public static void debugMines( int[][] mines ) {

@@ -23,6 +23,9 @@ public class Minefield extends AnchorPane {
 	public Minefield( int[][] mines, int numMines ) {
 		super();
 		gp = new GridPane();
+		
+		maxCellsUndone = (mines.length * mines[0].length)/5; 
+		
 		this.mines = mines;
 		this.numMines = numMines;
 		this.mineLoc = new int[mines.length][mines[0].length];
@@ -48,8 +51,10 @@ public class Minefield extends AnchorPane {
 			                System.exit( 1 );
 						}
 						b.setText( mines[y][x]+"" );
-						uncoverCellsAround( y, x, x, y, true );
-						numCellsUndone = 0;
+						if( mines[y][x] == 0 ) {
+							uncoverCellsAround( y, x, x, y, true );
+							numCellsUndone = 0;
+						}
 					}
 					else {
 						if( b.getText().equals( "X" ) ) {
@@ -100,7 +105,7 @@ public class Minefield extends AnchorPane {
 	}
 
 	int numCellsUndone = 0;
-	int maxCellsUndone = 15;
+	int maxCellsUndone = -1;
 	
 	private void uncoverCellsAround( int y, int x, int sx, int sy, boolean first ) {
 		if( (y < 0 || y >= mines.length) || (x<0 || x>=mines[0].length) ) {
@@ -109,7 +114,7 @@ public class Minefield extends AnchorPane {
 		else {
 			
 		    for( Node node : gp.getChildren() ) {
-		        if( gp.getRowIndex(node) == y && gp.getColumnIndex(node) == x) {
+		        if( GridPane.getRowIndex(node) == y && GridPane.getColumnIndex(node) == x) {
 		        	Button b = (Button)node;
 		        	if( !( b.getText().equals( "" ) ) && !first ) return;
 		        	if( mines[y][x] > -1 && mines[y][x] < 4 && 
