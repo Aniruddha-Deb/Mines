@@ -6,8 +6,10 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -24,12 +26,25 @@ public class Minefield extends AnchorPane {
 		super();
 		gp = new GridPane();
 		
+		for( int i=0; i<mines[0].length; i++ ) {
+			ColumnConstraints cc = new ColumnConstraints();
+			cc.setPercentWidth( (100/mines[0].length) );
+			gp.getColumnConstraints().add( cc );
+		}
+		
+		for( int i=0; i<mines.length; i++ ) {
+			RowConstraints cc = new RowConstraints();
+			cc.setPercentHeight( (100/mines.length) );
+			gp.getRowConstraints().add( cc );			
+		}
+		
 		maxCellsUndone = (mines.length * mines[0].length)/5; 
 		
 		this.mines = mines;
 		this.numMines = numMines;
 		this.mineLoc = new int[mines.length][mines[0].length];
 		int yc = 0;
+		
 		for( int[] i : mines ) {
 			int xc = 0;
 			for( int j : i ) {
