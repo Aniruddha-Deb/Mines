@@ -1,7 +1,8 @@
 package com.sensei.mines.ui;
 
+import com.sensei.mines.Mines;
+
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -10,10 +11,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 public class Minefield extends AnchorPane {
 
@@ -21,9 +19,11 @@ public class Minefield extends AnchorPane {
 	private int[][] mineLoc = null;
 	private int numMines = -1;
 	private GridPane gp = null;
+	private Mines app = null;
 	
-	public Minefield( int[][] mines, int numMines ) {
+	public Minefield( Mines application, int[][] mines, int numMines ) {
 		super();
+		this.app = application;
 		gp = new GridPane();
 		
 		for( int i=0; i<mines[0].length; i++ ) {
@@ -57,18 +57,14 @@ public class Minefield extends AnchorPane {
 					int x = GridPane.getColumnIndex( b );
 					if( e.getButton().equals( MouseButton.PRIMARY ) ) {
 						if( mines[y][x] == -1 ) {
-							Stage dialog = new Stage();
-							StackPane sp = new StackPane();
-							sp.getChildren().add( new Text( "Game Over! :(" ) );
-			                Scene dialogScene = new Scene(sp, 300, 200);
-			                dialog.setScene(dialogScene);
-			                dialog.showAndWait();
-			                System.exit( 1 );
+							app.showEndGameMenu( false );
 						}
-						b.setText( mines[y][x]+"" );
-						if( mines[y][x] == 0 ) {
-							uncoverCellsAround( y, x, x, y, true );
-							numCellsUndone = 0;
+						else {
+							b.setText( mines[y][x]+"" );
+							if( mines[y][x] == 0 ) {
+								uncoverCellsAround( y, x, x, y, true );
+								numCellsUndone = 0;
+							}
 						}
 					}
 					else {
@@ -109,13 +105,7 @@ public class Minefield extends AnchorPane {
 		}
 		
 		if( msum == numMines ) {
-			Stage dialog = new Stage();
-			StackPane sp = new StackPane();
-			sp.getChildren().add( new Text( "You Won!! :)" ) );
-            Scene dialogScene = new Scene(sp, 300, 200);
-            dialog.setScene(dialogScene);
-            dialog.showAndWait();
-            System.exit( 1 );			
+			app.showEndGameMenu( true );
 		}
 	}
 
