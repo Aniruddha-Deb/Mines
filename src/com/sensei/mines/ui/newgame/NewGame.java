@@ -56,9 +56,9 @@ public class NewGame extends Stage {
 		
 		Scene s = new Scene( ap );
 		super.setTitle( "New Game" );
-		if( application.getStage() != null ) {
+		if( application.getGameInstance() != null ) {
 			this.initModality( Modality.APPLICATION_MODAL );
-			this.initOwner( application.getStage() );
+			this.initOwner( application.getGameInstance() );
 		}
 		super.setScene( s );
 	}

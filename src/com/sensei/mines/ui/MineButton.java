@@ -1,6 +1,7 @@
 package com.sensei.mines.ui;
 
 import javafx.scene.control.ToggleButton;
+import javafx.scene.paint.Color;
 
 public class MineButton extends ToggleButton {
 
@@ -12,8 +13,10 @@ public class MineButton extends ToggleButton {
 	
 	public MineButton( int row, int col ) {
 		super( "" );
+		super.setStyle( "-fx-background-radius: 0px;" );
 		super.setMaxSize( Double.MAX_VALUE, Double.MAX_VALUE );
 		this.row = row;
+		this.value = 0;
 		this.col = col;
 	}
 	
@@ -26,12 +29,16 @@ public class MineButton extends ToggleButton {
 		super.setText( value+"" );
 	}
 	
-	public void flag() {
-		flag = true; 
-	}
-	
-	public void unflag() {
-		flag = false;
+	public void toggleFlag() {
+		flag = !flag;
+		if( flag ) {
+			super.setText( "X" );
+			super.setTextFill( Color.RED );
+		}
+		else {
+			super.setText( "" );
+			super.setTextFill( Color.BLACK );
+		}
 	}
 	
 	public boolean getFlag() {

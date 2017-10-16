@@ -12,12 +12,12 @@ import javafx.stage.Stage;
 
 public class Mines extends Application {
 	
-	private Stage stage = null;
+	private Game instance = null;
 	
 	public void startGame( MinesPreferences prefs ) {
 		try {
-			Game g = new Game( this, prefs );
-			g.show();
+			instance = new Game( this, prefs );
+			instance.show();
 		} catch( IOException ex ) {
 			ex.printStackTrace();
 		}
@@ -25,27 +25,28 @@ public class Mines extends Application {
 	
 	@Override
 	public void stop() throws Exception {
-		stage.close();
+		instance.close();
 		super.stop();
 	};
 	
 	@Override
 	public void start( Stage primaryStage ) throws Exception{		
-		this.stage = primaryStage;
 		showNewGameMenu();
+	}
+	
+	public Stage getGameInstance() {
+		return instance;
 	}
 	
 	public void showNewGameMenu() {
 		try {
+			if( instance != null ) 
+				instance.close();
 			NewGame ng = new NewGame( this );
 			ng.show();
 		} catch( Exception ex ) {
 			ex.printStackTrace();
 		}
-	}
-	
-	public Stage getStage(){
-		return stage;
 	}
 	
 	public void showEndGameMenu( boolean won ) {

@@ -3,78 +3,69 @@ package com.sensei.mines.ui.game;
 import java.io.IOException;
 
 import com.sensei.mines.Mines;
-import com.sensei.mines.core.MinefieldGenerator;
 import com.sensei.mines.core.MinesPreferences;
-import com.sensei.mines.ui.MineButton;
-import com.sensei.mines.ui.MineClickListener;
 import com.sensei.mines.ui.MineGrid;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
-public class Game extends Stage implements MineClickListener{
+public class Game extends Stage{
 	
-	private Mines application = null;
 	private MineGrid grid = null;
-	private MinesPreferences prefs = null;
 	
 	@FXML
-	private VBox parent = null;
+	private VBox parent;
+	@FXML
+	private Label timeLabel;
+	@FXML
+	private Label minesLeftLabel;
+	
+	private int numMines = -1;
 	
 	public Game( Mines application, MinesPreferences prefs ) throws IOException {
 		super();
-		this.application = application;
-		this.prefs = prefs;
-		this.grid = new MineGrid( prefs );
-		grid.addMineClickListener( this );
+		this.grid = new MineGrid( prefs, application );
+		
+		this.numMines = prefs.getMines();
 		
 		FXMLLoader loader = new FXMLLoader();
 		loader.setController( this );
 		loader.setLocation( Game.class.getResource( "game.fxml" ) );
 		AnchorPane ap = (AnchorPane)loader.load();
 		
-		Scene s = new Scene( ap );
+		Scene s = new Scene( ap, prefs.getCols()*30, prefs.getRows()*30+10 );
 		super.setTitle( "Mines by Deb" );
 		super.setScene( s );
 	}
-
+	
+	Timeline timer = null;
+	
 	@FXML
 	public void initialize() {
 		parent.getChildren().add( grid );
+		timeLabel.setText( "0" );
+		timer = new Timeline( new KeyFrame ( Duration.seconds(1), (e) -> {
+			int i = Integer.parseInt( timeLabel.getText() );
+			System.out.println( i+1 );
+			timeLabel.setText( (i+1)+"" );		  
+		} ) );
+		timer.setCycleCount(Timeline.INDEFINITE);
+		timer.play();
 	}
 	
-	private boolean firstClick = true;
-	
-	private void doFirstClickSetup( MineButton b ) {
-		int[][] mines = MinefieldGenerator.generate( prefs, b.getRow(), b.getCol() );
-		MineButton[][] mButtons = grid.getMineButtons();
-		for( int i=0; i<prefs.getRows(); i++ ) {
-			for( int j=0; j<prefs.getCols(); j++ ) {
-				if( mines[i][j] == -1 ) {
-					mButtons[i][j].setMine( true );
-				}
-				else {
-					mButtons[i][j].setValue( mines[i][j] );
-				}
-			}
-		}
-	}
-
 	@Override
-	public void onClick( MineButton b ){
-		if( firstClick ) {
-			doFirstClickSetup( b );
-			firstClick = false;
-		}
-		b.showValue();
-		grid.openAroundButton( b.getRow(), b.getCol() );
-		if( b.hasMine() ) {
-			application.showEndGameMenu( false );
-		}
+	public void close(){
+		timer.stop();
+		super.close();
 	}
-	
 }

@@ -32,7 +32,7 @@ public class EndGame extends Stage {
 		Scene s = new Scene( ap );
 		super.setTitle( "End Game" );
 		super.initModality( Modality.APPLICATION_MODAL );
-		super.initOwner( application.getStage() );
+		super.initOwner( application.getGameInstance() );
 		super.setScene( s );
 	}
 	
