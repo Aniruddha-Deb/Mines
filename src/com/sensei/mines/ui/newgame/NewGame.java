@@ -3,6 +3,7 @@ package com.sensei.mines.ui.newgame;
 import java.io.IOException;
 
 import com.sensei.mines.Mines;
+import com.sensei.mines.core.MinesPreferences;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -98,17 +99,17 @@ public class NewGame extends Stage {
 		SettingsType settings = (SettingsType)t.getUserData();
 		switch( settings ) {
 			case BEGINNER:
-				application.startGame( 10, 10, 10 );
+				application.startGame( MinesPreferences.BEGINNER );
 				this.hide();		
 			break;
 			
 			case INTERMEDIATE:
-				application.startGame( 16, 16, 40 );
+				application.startGame( MinesPreferences.INTERMEDIATE );
 				this.hide();		
 			break;
 			
 			case EXPERT:
-				application.startGame( 16, 30, 99 );
+				application.startGame( MinesPreferences.EXPERT );
 				this.hide();		
 			break;
 			
@@ -142,7 +143,7 @@ public class NewGame extends Stage {
 						+ "range of " + mll + " to " + mul );
 			}
 
-			application.startGame( rows, cols, mines );
+			application.startGame( new MinesPreferences( rows, cols, mines ) );
 			this.hide();		
 		} catch( NumberFormatException ex ) {
 			showAlert( "Enter a suitable value in the custom fields" );

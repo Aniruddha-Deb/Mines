@@ -2,14 +2,23 @@ package com.sensei.mines.core;
 
 public class MinefieldGenerator {
 
-	public static int[][] generate( int width, int height, int numMines ) {
+	public static int[][] generate( MinesPreferences prefs, int y, int x ) {
+		
+		int height = prefs.getRows();
+		int width = prefs.getCols();
+		int numMines = prefs.getMines();
+		
 		int[][] mineField = new int[height][width];
 		for( int i=0; i<numMines; i++ ) {
 			boolean put = false;
 			while( !put ) {
 				int xLoc = (int)(Math.random()*width);
 				int yLoc = (int)(Math.random()*height);
-				if( mineField[yLoc][xLoc] != -1 ) {
+				int yDiff = Math.abs( yLoc-y );
+				int xDiff = Math.abs( xLoc-x );
+				boolean putable = (yDiff > 0) && (xDiff > 0);
+						
+				if( mineField[yLoc][xLoc] != -1 && putable ) {
 					put = true;
 					mineField[yLoc][xLoc] = -1;
 				}

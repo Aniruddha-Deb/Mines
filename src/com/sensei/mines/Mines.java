@@ -1,24 +1,26 @@
 package com.sensei.mines;
 
-import com.sensei.mines.core.MinefieldGenerator;
-import com.sensei.mines.ui.Minefield;
+import java.io.IOException;
+
+import com.sensei.mines.core.MinesPreferences;
 import com.sensei.mines.ui.endgame.EndGame;
+import com.sensei.mines.ui.game.Game;
 import com.sensei.mines.ui.newgame.NewGame;
 
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Mines extends Application {
 	
 	private Stage stage = null;
 	
-	public void startGame( int numRows, int numCols, int numMines ) {
-		int[][] mines = MinefieldGenerator.generate( numCols, numRows, numMines );
-		Scene s = new Scene( new Minefield( this, mines, numMines ), numCols*40, numRows*35 );
-		stage.setScene( s );
-		stage.setTitle( "Mines by Deb" );
-		stage.show();
+	public void startGame( MinesPreferences prefs ) {
+		try {
+			Game g = new Game( this, prefs );
+			g.show();
+		} catch( IOException ex ) {
+			ex.printStackTrace();
+		}
 	}
 	
 	@Override
