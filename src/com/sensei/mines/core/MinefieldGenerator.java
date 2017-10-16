@@ -16,7 +16,7 @@ public class MinefieldGenerator {
 				int yLoc = (int)(Math.random()*height);
 				int yDiff = Math.abs( yLoc-y );
 				int xDiff = Math.abs( xLoc-x );
-				boolean putable = (yDiff > 0) && (xDiff > 0);
+				boolean putable = (yDiff > 1) && (xDiff > 1);
 						
 				if( mineField[yLoc][xLoc] != -1 && putable ) {
 					put = true;

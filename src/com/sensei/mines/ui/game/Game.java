@@ -53,7 +53,7 @@ public class Game extends Stage implements MineClickListener{
 		int[][] mines = MinefieldGenerator.generate( prefs, b.getRow(), b.getCol() );
 		MineButton[][] mButtons = grid.getMineButtons();
 		for( int i=0; i<prefs.getRows(); i++ ) {
-			for( int j=0; j<prefs.getRows(); j++ ) {
+			for( int j=0; j<prefs.getCols(); j++ ) {
 				if( mines[i][j] == -1 ) {
 					mButtons[i][j].setMine( true );
 				}
