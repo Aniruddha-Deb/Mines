@@ -56,7 +56,6 @@ public class Game extends Stage{
 		timeLabel.setText( "0" );
 		timer = new Timeline( new KeyFrame ( Duration.seconds(1), (e) -> {
 			int i = Integer.parseInt( timeLabel.getText() );
-			System.out.println( i+1 );
 			timeLabel.setText( (i+1)+"" );		  
 		} ) );
 		timer.setCycleCount(Timeline.INDEFINITE);

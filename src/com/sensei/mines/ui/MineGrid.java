@@ -22,6 +22,7 @@ public class MineGrid extends GridPane implements EventHandler<MouseEvent>{
 	private MinesPreferences prefs = null;
 	
 	private int numMinesFlagged = 0;
+	private int numMinesRevealed = 0;
 	
 	private Mines application = null; 
 	
@@ -43,9 +44,10 @@ public class MineGrid extends GridPane implements EventHandler<MouseEvent>{
 	public void openAroundButton( int row, int col ) {
 		
 		MineButton b = mineButtons[row][col];
-		if( !b.isDisabled() && !b.getFlag() ) { 
+		if( !b.isSelected() && !b.getFlag() ) { 
 			b.setSelected( true );
 			b.setDisable( true );
+			numMinesRevealed++;
 			b.showValue();
 			if( b.getValue() == 0 ) {
 				int y = row, x = col;
@@ -69,8 +71,8 @@ public class MineGrid extends GridPane implements EventHandler<MouseEvent>{
 	
 	public void populateButtons() {
 		mineButtons = new MineButton[prefs.getRows()][prefs.getCols()];
-		for( int i=0; i<prefs.getCols(); i++ ) {
-			for( int j=0; j<prefs.getRows(); j++ ) {
+		for( int i=0; i<prefs.getRows(); i++ ) {
+			for( int j=0; j<prefs.getCols(); j++ ) {
 				mineButtons[i][j] = new MineButton( i, j );
 				super.add( mineButtons[i][j], j, i );
 				GridPane.setHgrow( mineButtons[i][j], Priority.ALWAYS );
@@ -129,16 +131,56 @@ public class MineGrid extends GridPane implements EventHandler<MouseEvent>{
 		}
 		b.toggleFlag();
 		
-		if( numMinesFlagged == prefs.getMines() ) {
+		if( numMinesFlagged == prefs.getMines() && 
+				numMinesRevealed+numMinesFlagged == ( prefs.getRows()*prefs.getCols() ) ) {
 			application.showEndGameMenu( true );
 		}
+	}
+	
+	private void revealBasedOnRules( MineButton button ) {
+		MineButton[] buttons = getAdjacentMineButtons( button );
+		int numAdj = button.getValue();
+		int numFlagged = 0;
+		for( MineButton b : buttons ) {
+			if( b.getFlag() ) {
+				numFlagged++;
+			}
+		}
+				
+		if( numFlagged == numAdj ) {
+			for( MineButton b : buttons ) {
+				onLeftClick( b );
+			}
+		}
+	}
+	
+	private MineButton[] getAdjacentMineButtons( MineButton b ) {
+		int row = b.getRow();
+		int col = b.getCol();
+		List<MineButton> buttons = new ArrayList<MineButton>();
+		for( int i=row-1; i<=row+1; i++ ) {
+			for( int j=col-1; j<=col+1; j++ ) {
+				if( (!((i==row)&&(j==col))) && inBounds(i, j) ) {
+					buttons.add( mineButtons[i][j] );
+				}
+			}
+		}
+		
+		return buttons.toArray( new MineButton[buttons.size()]);
+	}
+	
+	private boolean inBounds( int y, int x ) {
+		return ((y>=0)&&(y<prefs.getRows())) && ((x>=0)&&(x<prefs.getCols()));
 	}
  
 	@Override
 	public void handle( MouseEvent event ){
-		MineButton b = (MineButton)event.getSource();	
-		// TODO both right and left click implementation
-		if( event.isPrimaryButtonDown() ) {
+		event.consume();
+		MineButton b = (MineButton)event.getSource();
+		if( event.isPrimaryButtonDown() && event.isSecondaryButtonDown() ) {
+			revealBasedOnRules( b );
+		}
+		else if( event.isPrimaryButtonDown() ) {
 			onLeftClick( b );
 		}
 		else if( event.isSecondaryButtonDown() ) {
