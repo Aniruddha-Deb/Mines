@@ -175,12 +175,8 @@ public class MineGrid extends GridPane implements EventHandler<MouseEvent>{
  
 	@Override
 	public void handle( MouseEvent event ){
-		event.consume();
 		MineButton b = (MineButton)event.getSource();
-		if( event.isPrimaryButtonDown() && event.isSecondaryButtonDown() ) {
-			revealBasedOnRules( b );
-		}
-		else if( event.isPrimaryButtonDown() ) {
+		if( event.isPrimaryButtonDown() ) {
 			onLeftClick( b );
 		}
 		else if( event.isSecondaryButtonDown() ) {
